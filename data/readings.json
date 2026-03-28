@@ -1,0 +1,375 @@
+{
+  "WCH1221217136": [
+    {
+      "hr": 43,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:33:25.703Z"
+    },
+    {
+      "hr": 77,
+      "spo2": 97,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:34:30.940Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:35:01.177Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:35:31.622Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:36:02.490Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:41:48.355Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:42:18.651Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:42:49.197Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:43:19.838Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:43:50.643Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:44:21.315Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:44:52.127Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:45:22.454Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:45:52.667Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 1,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:46:22.982Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 1,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:46:53.380Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 1,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:47:23.665Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:57:11.431Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:57:41.811Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 8,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:58:12.288Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 8,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:58:43.746Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 18,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:59:14.974Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 36,
+      "status": "NORMAL",
+      "time": "2026-03-28T17:59:45.296Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 36,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:00:15.868Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 36,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:00:46.373Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 36,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:01:16.859Z"
+    },
+    {
+      "hr": 41,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:17:52.435Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:18:22.712Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:18:52.876Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:19:22.947Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:19:53.231Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:20:23.563Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:20:53.724Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:21:24.412Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:24:14.414Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:24:44.717Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:25:14.886Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:25:45.086Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:26:15.201Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:26:45.308Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:27:15.616Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:27:45.768Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:28:15.851Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:28:46.012Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:29:16.273Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:29:46.578Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:30:16.870Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:30:47.115Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:31:17.619Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:31:47.879Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:32:17.935Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:32:48.204Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-28T18:33:18.447Z"
+    }
+  ]
+}
