@@ -1,3 +1,5 @@
 server-env.bat
 .env
-node_modules/
+node_modules/git init
+git add .
+git status

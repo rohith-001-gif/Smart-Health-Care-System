@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="180" viewBox="0 0 280 180" fill="none">
+  <defs>
+    <linearGradient id="watch-bg" x1="20" y1="20" x2="260" y2="160" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#161534"/>
+      <stop offset="1" stop-color="#3d2361"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="140" y1="64" x2="140" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#c7f0ff"/>
+      <stop offset="1" stop-color="#7cf8ca"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="268" height="168" rx="24" fill="url(#watch-bg)" stroke="#b28fff" stroke-opacity="0.4"/>
+  <rect x="114" y="26" width="52" height="20" rx="10" fill="#2f2f58"/>
+  <rect x="114" y="134" width="52" height="20" rx="10" fill="#2f2f58"/>
+  <rect x="95" y="46" width="90" height="88" rx="22" fill="#1e1f4e" stroke="#96fff2" stroke-opacity="0.5"/>
+  <rect x="110" y="64" width="60" height="54" rx="12" fill="url(#screen)"/>
+  <circle cx="140" cy="91" r="13" fill="#0f6b66" fill-opacity="0.35"/>
+  <path d="M132 91H148" stroke="#054240" stroke-width="4" stroke-linecap="round"/>
+  <path d="M140 83V99" stroke="#054240" stroke-width="4" stroke-linecap="round"/>
+</svg>

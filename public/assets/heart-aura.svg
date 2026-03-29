@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="180" viewBox="0 0 280 180" fill="none">
+  <defs>
+    <linearGradient id="heart-bg" x1="16" y1="10" x2="264" y2="170" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#311338"/>
+      <stop offset="1" stop-color="#7a1f4f"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(140 95) rotate(90) scale(52 60)">
+      <stop stop-color="#ffd7e4"/>
+      <stop offset="1" stop-color="#ffd7e4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="heart-main" x1="100" y1="56" x2="180" y2="132" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffe4f0"/>
+      <stop offset="1" stop-color="#ff7fb3"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="268" height="168" rx="24" fill="url(#heart-bg)" stroke="#ffb3d2" stroke-opacity="0.45"/>
+  <ellipse cx="140" cy="95" rx="60" ry="52" fill="url(#glow)"/>
+  <path d="M140 136C135 132 128 126 120 119C103 104 88 89 88 72C88 57 100 46 114 46C124 46 133 51 140 60C147 51 156 46 166 46C180 46 192 57 192 72C192 89 177 104 160 119C152 126 145 132 140 136Z" fill="url(#heart-main)"/>
+  <path d="M96 108H120L132 88L145 119L157 98H184" stroke="#fff7fb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

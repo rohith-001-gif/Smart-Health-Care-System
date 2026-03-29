@@ -370,6 +370,20 @@
       "steps": 0,
       "status": "NORMAL",
       "time": "2026-03-28T18:33:18.447Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-29T05:06:30.102Z"
+    },
+    {
+      "hr": 0,
+      "spo2": 0,
+      "steps": 0,
+      "status": "NORMAL",
+      "time": "2026-03-29T05:07:00.181Z"
     }
   ]
 }
