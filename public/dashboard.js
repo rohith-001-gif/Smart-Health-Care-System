@@ -1,4 +1,4 @@
-const doctorEmail = localStorage.getItem("doctor");
+const doctorEmail = localStorage.getItem("doctor_email") || localStorage.getItem("doctor");
 
 const form = document.getElementById("watchForm");
 const statusMsg = document.getElementById("statusMsg");
@@ -19,9 +19,12 @@ const notificationBadge = document.getElementById("notificationBadge");
 const notificationPanel = document.getElementById("notificationPanel");
 const notificationList = document.getElementById("notificationList");
 const hardwareEndpoint = document.getElementById("hardwareEndpoint");
+const markReadBtn = document.getElementById("markReadBtn");
+const clearAllBtn = document.getElementById("clearAllBtn");
 
 let editingWatchID = null;
 let latestWatches = [];
+let notificationsState = [];
 
 if (!doctorEmail) {
   window.location = "login.html";
@@ -33,6 +36,7 @@ if (hardwareEndpoint) {
 }
 
 logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("doctor_email");
   localStorage.removeItem("doctor");
   window.location = "login.html";
 });
@@ -47,21 +51,31 @@ document.addEventListener("click", (event) => {
   }
 });
 
+markReadBtn.addEventListener("click", () => {
+  notificationsState = notificationsState.map((n) => ({ ...n, read: true }));
+  renderNotifications(notificationsState);
+});
+
+clearAllBtn.addEventListener("click", () => {
+  notificationsState = [];
+  renderNotifications(notificationsState);
+});
+
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   statusMsg.textContent = "";
 
   const payload = {
-    watchID: watchIDInput.value.trim().toUpperCase(),
+    watch_id: watchIDInput.value.trim().toUpperCase(),
     name: nameInput.value.trim(),
     email: emailInput.value.trim(),
     age: ageInput.value.trim(),
     condition: conditionInput.value.trim(),
     phone: phoneInput.value.trim(),
-    doctorEmail
+    doctor_email: doctorEmail
   };
 
-  if (!payload.watchID || !payload.name || !payload.email) {
+  if (!payload.watch_id || !payload.name || !payload.email) {
     statusMsg.textContent = "Please fill Watch ID, Patient Name and Email.";
     return;
   }
@@ -70,7 +84,7 @@ form.addEventListener("submit", async (event) => {
   const method = editingWatchID ? "PUT" : "POST";
 
   if (editingWatchID) {
-    payload.watchID = editingWatchID;
+    payload.watch_id = editingWatchID;
   }
 
   try {
@@ -87,7 +101,7 @@ form.addEventListener("submit", async (event) => {
       return;
     }
 
-    statusMsg.textContent = result.message;
+    statusMsg.textContent = result.message || "Saved.";
     resetEditMode();
     await loadDoctorWatches();
     await loadNotifications();
@@ -111,18 +125,18 @@ function resetEditMode() {
 }
 
 function startEdit(watch) {
-  editingWatchID = watch.watchID;
-  watchIDInput.value = watch.watchID;
+  editingWatchID = watch.watch_id;
+  watchIDInput.value = watch.watch_id;
   watchIDInput.disabled = true;
-  nameInput.value = watch.name;
-  emailInput.value = watch.email;
-  ageInput.value = watch.age === "-" ? "" : watch.age;
-  conditionInput.value = watch.condition === "-" ? "" : watch.condition;
-  phoneInput.value = watch.phone === "-" ? "" : watch.phone;
+  nameInput.value = watch.name || "";
+  emailInput.value = watch.email || "";
+  ageInput.value = watch.age === "-" ? "" : (watch.age || "");
+  conditionInput.value = watch.condition === "-" ? "" : (watch.condition || "");
+  phoneInput.value = watch.phone === "-" ? "" : (watch.phone || "");
   submitBtn.textContent = "Update Patient";
   formTitle.textContent = "Edit Linked Patient";
   cancelEditBtn.hidden = false;
-  statusMsg.textContent = "Editing watch: " + watch.watchID;
+  statusMsg.textContent = "Editing watch: " + watch.watch_id;
 }
 
 function openStats(watchID) {
@@ -169,18 +183,19 @@ async function updateConnectivityForWatches(watches) {
   const readingsByWatch = await Promise.all(
     watches.map(async (watch) => {
       try {
-        const response = await fetch("/data/" + encodeURIComponent(watch.watchID));
+        const response = await fetch("/data/" + encodeURIComponent(watch.watch_id));
         const data = await response.json();
-        return { watchID: watch.watchID, readings: data };
+        const readings = Array.isArray(data) ? data : (data.readings || []);
+        return { watch_id: watch.watch_id, readings };
       } catch (error) {
-        return { watchID: watch.watchID, readings: [] };
+        return { watch_id: watch.watch_id, readings: [] };
       }
     })
   );
 
   const map = {};
   readingsByWatch.forEach((entry) => {
-    map[entry.watchID] = getConnectionLabelFromData(entry.readings);
+    map[entry.watch_id] = getConnectionLabelFromData(entry.readings);
   });
 
   cells.forEach((cell) => {
@@ -193,7 +208,7 @@ async function updateConnectivityForWatches(watches) {
 
 async function loadDoctorWatches() {
   try {
-    const response = await fetch("/doctorWatches?doctorEmail=" + encodeURIComponent(doctorEmail));
+    const response = await fetch("/doctorWatches?email=" + encodeURIComponent(doctorEmail));
     const result = await response.json();
 
     if (!response.ok || !result.success) {
@@ -201,9 +216,9 @@ async function loadDoctorWatches() {
       return;
     }
 
-    latestWatches = result.watches;
+    latestWatches = result.watches || [];
 
-    if (!result.watches.length) {
+    if (!latestWatches.length) {
       watchesList.innerHTML = "<p>No watches linked yet. Add one above.</p>";
       return;
     }
@@ -214,16 +229,16 @@ async function loadDoctorWatches() {
 
     const body = document.createElement("tbody");
 
-    result.watches.forEach((watch) => {
+    latestWatches.forEach((watch) => {
       const row = document.createElement("tr");
 
-      row.innerHTML = "<td>" + watch.watchID + "</td><td><span class='conn-pill conn-loading' data-conn-watch='" + watch.watchID + "'>Checking...</span></td><td>" + watch.name + "</td><td>" + watch.email + "</td><td>" + watch.age + "</td><td>" + watch.condition + "</td><td>" + watch.phone + "</td>";
+      row.innerHTML = "<td>" + watch.watch_id + "</td><td><span class='conn-pill conn-loading' data-conn-watch='" + watch.watch_id + "'>Checking...</span></td><td>" + (watch.name || "-") + "</td><td>" + (watch.email || "-") + "</td><td>" + (watch.age || "-") + "</td><td>" + (watch.condition || "-") + "</td><td>" + (watch.phone || "-") + "</td>";
 
       const actionCell = document.createElement("td");
       actionCell.className = "action-cell";
 
       const editBtn = createActionButton("Edit", "secondary-btn", () => startEdit(watch));
-      const statsBtn = createActionButton("View Stats", "stats-btn", () => openStats(watch.watchID));
+      const statsBtn = createActionButton("View Stats", "stats-btn", () => openStats(watch.watch_id));
 
       actionCell.appendChild(editBtn);
       actionCell.appendChild(statsBtn);
@@ -235,26 +250,28 @@ async function loadDoctorWatches() {
     table.appendChild(body);
     watchesList.innerHTML = "";
     watchesList.appendChild(table);
-    await updateConnectivityForWatches(result.watches);
+    await updateConnectivityForWatches(latestWatches);
   } catch (error) {
     watchesList.innerHTML = "<p>Server error while loading watches.</p>";
   }
 }
 
 function renderNotifications(notifications) {
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
   if (!notifications.length) {
     notificationList.innerHTML = "<li class='notif-empty'>No critical alerts right now.</li>";
     notificationBadge.hidden = true;
     return;
   }
 
-  notificationBadge.hidden = false;
-  notificationBadge.textContent = notifications.length;
+  notificationBadge.hidden = unreadCount === 0;
+  notificationBadge.textContent = unreadCount || notifications.length;
 
   notificationList.innerHTML = "";
   notifications.forEach((item) => {
     const li = document.createElement("li");
-    li.className = "notif-item";
+    li.className = "notif-item" + (item.read ? " notif-read" : "");
     li.innerHTML = "<strong>" + item.patientName + "</strong> (" + item.watchID + ")<br>HR: " + item.hr + " | SpO2: " + item.spo2 + "<br><span class='notif-time'>" + new Date(item.time).toLocaleString() + "</span>";
     notificationList.appendChild(li);
   });
@@ -262,17 +279,21 @@ function renderNotifications(notifications) {
 
 async function loadNotifications() {
   try {
-    const response = await fetch("/criticalNotifications?doctorEmail=" + encodeURIComponent(doctorEmail));
+    const response = await fetch("/criticalNotifications?doctor_email=" + encodeURIComponent(doctorEmail));
     const result = await response.json();
 
     if (!response.ok || !result.success) {
-      renderNotifications([]);
+      notificationsState = [];
+      renderNotifications(notificationsState);
       return;
     }
 
-    renderNotifications(result.notifications || []);
+    const incoming = (result.notifications || []).map((n) => ({ ...n, read: false }));
+    notificationsState = incoming;
+    renderNotifications(notificationsState);
   } catch (error) {
-    renderNotifications([]);
+    notificationsState = [];
+    renderNotifications(notificationsState);
   }
 }
 

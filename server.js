@@ -1,7 +1,9 @@
+require("dotenv").config();
+
 const express = require("express");
-const fs = require("fs");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
+const supabase = require("./lib/supabase");
 
 const app = express();
 app.use(cors());
@@ -10,440 +12,449 @@ app.use(express.static("public"));
 
 const CRITICAL_HR = 120;
 const CRITICAL_SPO2 = 90;
+
 const GROQ_API_KEY = (process.env.GROQ_API_KEY || "").trim();
 const GROQ_MODEL = (process.env.GROQ_MODEL || "llama-3.3-70b-versatile").trim();
-
 const MAIL_USER = process.env.MAIL_USER || "";
 const MAIL_PASS = process.env.MAIL_PASS || "";
 
 const transporter = MAIL_USER && MAIL_PASS
-  ? nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: MAIL_USER,
-      pass: MAIL_PASS
-    }
-  })
+  ? nodemailer.createTransport({ service: "gmail", auth: { user: MAIL_USER, pass: MAIL_PASS } })
   : null;
 
-function sendCriticalEmail(patient, entry) {
-  if (!transporter || !patient || !patient.email) return;
+const normalizeWatchId = (value = "") => value.trim().toUpperCase();
+const normalizeEmail = (value = "") => value.trim().toLowerCase();
 
-  const toList = [];
-  const doctorEmail = String(patient.doctorEmail || "").trim();
-  const patientEmail = String(patient.email || "").trim();
+function isCritical(reading) {
+  return Number(reading.hr) > CRITICAL_HR || Number(reading.spo2) < CRITICAL_SPO2;
+}
 
-  if (doctorEmail) toList.push(doctorEmail);
-  if (patientEmail && patientEmail.toLowerCase() !== doctorEmail.toLowerCase()) {
-    toList.push(patientEmail);
+function mapPatient(row = {}) {
+  return {
+    watch_id: row.watch_id,
+    watchID: row.watch_id,
+    name: row.name || "",
+    email: row.email || "",
+    doctor_email: row.doctor_email || "",
+    doctorEmail: row.doctor_email || "",
+    age: row.age || "",
+    condition: row.condition || "",
+    phone: row.phone || "",
+    created_at: row.created_at,
+    updated_at: row.updated_at
+  };
+}
+
+function mapReading(row = {}) {
+  return {
+    id: row.id,
+    watch_id: row.watch_id,
+    watchID: row.watch_id,
+    hr: Number(row.hr) || 0,
+    spo2: Number(row.spo2) || 0,
+    steps: Number(row.steps) || 0,
+    status: row.status || (isCritical(row) ? "critical" : "normal"),
+    time: row.time
+  };
+}
+
+function sendCriticalEmail(patient, reading) {
+  if (!transporter || !patient) return;
+
+  const emails = [patient.doctor_email, patient.email].filter(Boolean);
+  if (!emails.length) return;
+
+  transporter
+    .sendMail({
+      to: emails.join(","),
+      subject: "Critical Patient Alert",
+      text: `Critical alert for ${patient.name}
+Watch ID: ${reading.watch_id}
+HR: ${reading.hr}
+SpO2: ${reading.spo2}`
+    })
+    .catch((err) => console.error("Email send error", err));
+}
+
+async function fetchReadings(watch_id, limit = 100) {
+  const { data, error } = await supabase
+    .from("readings")
+    .select("*")
+    .eq("watch_id", watch_id)
+    .order("time", { ascending: true })
+    .limit(limit);
+
+  if (error) throw error;
+  return data.map(mapReading);
+}
+
+// ---------------- LOGIN (Doctor) ----------------
+app.post("/login", async (req, res) => {
+  try {
+    const email = normalizeEmail(req.body.email);
+    const password = (req.body.password || "").trim();
+
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Email and password required" });
+    }
+
+    const { data, error } = await supabase
+      .from("doctors")
+      .select("email")
+      .eq("email", email)
+      .eq("password", password)
+      .single();
+
+    if (error || !data) {
+      return res.status(401).json({ success: false, message: "Invalid credentials" });
+    }
+
+    return res.json({ success: true, doctor_email: data.email });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
-  if (!toList.length) return;
+});
 
-  transporter.sendMail({
-    to: toList.join(","),
-    subject: "Patient Alert",
-    text: `Critical alert for ${patient.name}.\nWatch ID: ${entry.watchID || "-"}\nHR: ${entry.hr}, SpO2: ${entry.spo2}, Steps: ${entry.steps}`
-  }).catch((error) => {
-    console.error("Email send failed:", error.message);
-  });
-}
+// ---------------- PATIENT LOGIN ----------------
+app.post("/patientLogin", async (req, res) => {
+  try {
+    const watch_id = normalizeWatchId(req.body.watch_id || req.body.watchID);
+    const email = normalizeEmail(req.body.email);
 
-function readJSON(path) {
-  if (!fs.existsSync(path)) return {};
-  return JSON.parse(fs.readFileSync(path, "utf8"));
-}
+    if (!watch_id || !email) {
+      return res.status(400).json({ success: false, message: "Missing fields" });
+    }
 
-function writeJSON(path, data) {
-  fs.writeFileSync(path, JSON.stringify(data, null, 2));
-}
+    const { data, error } = await supabase
+      .from("patients")
+      .select("*")
+      .eq("watch_id", watch_id)
+      .eq("email", email)
+      .single();
 
-function findCaseInsensitiveKey(obj, key) {
-  const target = String(key || "").trim().toLowerCase();
-  if (!target) return null;
-  const keys = Object.keys(obj || {});
-  for (const item of keys) {
-    if (String(item).toLowerCase() === target) return item;
+    if (error || !data) {
+      return res.status(401).json({ success: false, message: "Invalid credentials" });
+    }
+
+    return res.json({ success: true, patient: mapPatient(data) });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
-  return null;
-}
+});
 
-function isWatchOwnedByAnotherDoctor(existingEntry, doctorEmail) {
-  return existingEntry && existingEntry.doctorEmail && existingEntry.doctorEmail !== doctorEmail;
-}
+// ---------------- ADD PATIENT ----------------
+app.post("/addPatient", async (req, res) => {
+  try {
+    const watch_id = normalizeWatchId(req.body.watch_id || req.body.watchID);
+    const name = (req.body.name || "").trim();
+    const email = normalizeEmail(req.body.email);
+    const doctor_email = normalizeEmail(req.body.doctor_email || req.body.doctorEmail);
+    const age = (req.body.age || "").trim();
+    const condition = (req.body.condition || "").trim();
+    const phone = (req.body.phone || "").trim();
 
-function isCriticalReading(reading) {
-  if (!reading) return false;
-  const hr = Number(reading.hr);
-  const spo2 = Number(reading.spo2);
-  const status = String(reading.status || "").toLowerCase();
-  return hr > CRITICAL_HR || spo2 < CRITICAL_SPO2 || status.includes("critical");
-}
+    if (!watch_id || !name || !email || !doctor_email) {
+      return res.status(400).json({ success: false, message: "Watch ID, name, email, and doctor email are required" });
+    }
 
-async function askGroq(question, contextText, role) {
-  if (!GROQ_API_KEY) {
-    throw new Error("GROQ_API_KEY is not configured");
+    const { data, error } = await supabase
+      .from("patients")
+      .insert({ watch_id, name, email, doctor_email, age, condition, phone })
+      .select("*")
+      .single();
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+
+    return res.json({ success: true, patient: mapPatient(data), message: "Watch linked to patient" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
+});
 
-  const systemPrompt = role === "doctor"
-    ? "You are a concise clinical assistant for doctors. Use the provided patient data only. Give practical guidance and mention uncertainty when needed. Keep responses under 8 lines."
-    : "You are a supportive health assistant for patients. Use simple language, avoid diagnosis claims, and advise contacting doctor/emergency for severe values. Keep responses under 8 lines.";
+// ---------------- UPDATE PATIENT ----------------
+app.put("/updatePatient", async (req, res) => {
+  try {
+    const watch_id = normalizeWatchId(req.body.watch_id || req.body.watchID);
+    const doctor_email = normalizeEmail(req.body.doctor_email || req.body.doctorEmail);
 
-  const modelsToTry = [GROQ_MODEL, "llama-3.1-8b-instant"];
-  let lastError = "";
+    if (!watch_id || !doctor_email) {
+      return res.status(400).json({ success: false, message: "Watch ID and doctor email are required" });
+    }
 
-  for (const modelName of modelsToTry) {
+    const updates = {
+      name: (req.body.name || "").trim(),
+      email: normalizeEmail(req.body.email),
+      age: (req.body.age || "").trim(),
+      condition: (req.body.condition || "").trim(),
+      phone: (req.body.phone || "").trim(),
+      doctor_email
+    };
+
+    const { data, error } = await supabase
+      .from("patients")
+      .update(updates)
+      .eq("watch_id", watch_id)
+      .select("*")
+      .single();
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+
+    if (!data) {
+      return res.status(404).json({ success: false, message: "Watch not found" });
+    }
+
+    return res.json({ success: true, patient: mapPatient(data), message: "Patient updated" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// ---------------- GET WATCHES FOR DOCTOR ----------------
+app.get("/doctorWatches", async (req, res) => {
+  try {
+    const doctor_email = normalizeEmail(req.query.email || req.query.doctor_email || req.query.doctorEmail);
+
+    if (!doctor_email) {
+      return res.json({ success: true, watches: [] });
+    }
+
+    const { data, error } = await supabase
+      .from("patients")
+      .select("*")
+      .eq("doctor_email", doctor_email)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+
+    return res.json({ success: true, watches: data.map(mapPatient) });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// ---------------- GET READINGS ----------------
+app.get("/data/:watchId", async (req, res) => {
+  try {
+    const watch_id = normalizeWatchId(req.params.watchId);
+    if (!watch_id) {
+      return res.status(400).json({ success: false, message: "watch_id is required" });
+    }
+
+    const readings = await fetchReadings(watch_id, 100);
+    return res.json({ success: true, readings });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Unable to load readings" });
+  }
+});
+
+// ---------------- PATIENT PROFILE FOR DOCTOR ----------------
+app.get("/patientProfile/:watchId", async (req, res) => {
+  try {
+    const watch_id = normalizeWatchId(req.params.watchId);
+    const doctor_email = normalizeEmail(req.query.doctor_email || req.query.doctorEmail);
+
+    if (!watch_id) {
+      return res.status(400).json({ success: false, message: "watch_id is required" });
+    }
+
+    const { data: patient, error: patientError } = await supabase
+      .from("patients")
+      .select("*")
+      .eq("watch_id", watch_id)
+      .single();
+
+    if (patientError || !patient) {
+      return res.status(404).json({ success: false, message: "Patient not found" });
+    }
+
+    if (doctor_email && normalizeEmail(patient.doctor_email) !== doctor_email) {
+      return res.status(403).json({ success: false, message: "Doctor not linked to this patient" });
+    }
+
+    const readings = await fetchReadings(watch_id, 120);
+    const latest = readings.length ? readings[readings.length - 1] : null;
+
+    return res.json({ success: true, profile: mapPatient(patient), readings, latest });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Unable to load profile" });
+  }
+});
+
+// ---------------- PATIENT PORTAL ----------------
+app.get("/patientPortal/:watchId", async (req, res) => {
+  try {
+    const watch_id = normalizeWatchId(req.params.watchId);
+    const email = normalizeEmail(req.query.email);
+
+    if (!watch_id || !email) {
+      return res.status(400).json({ success: false, message: "watch_id and email required" });
+    }
+
+    const { data: patient, error: patientError } = await supabase
+      .from("patients")
+      .select("*")
+      .eq("watch_id", watch_id)
+      .eq("email", email)
+      .single();
+
+    if (patientError || !patient) {
+      return res.status(404).json({ success: false, message: "Patient not found" });
+    }
+
+    const readings = await fetchReadings(watch_id, 120);
+    const latest = readings.length ? readings[readings.length - 1] : null;
+
+    return res.json({ success: true, profile: mapPatient(patient), readings, latest });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Unable to load patient portal" });
+  }
+});
+
+// ---------------- CRITICAL ALERTS ----------------
+app.get("/criticalNotifications", async (req, res) => {
+  try {
+    const doctor_email = normalizeEmail(req.query.doctor_email || req.query.doctorEmail);
+    if (!doctor_email) {
+      return res.json({ success: true, notifications: [] });
+    }
+
+    const { data: patients, error: patientError } = await supabase
+      .from("patients")
+      .select("watch_id,name,doctor_email,email")
+      .eq("doctor_email", doctor_email);
+
+    if (patientError) {
+      return res.status(400).json({ success: false, message: patientError.message });
+    }
+
+    const notifications = [];
+
+    for (const patient of patients) {
+      const { data: latestRow, error: readError } = await supabase
+        .from("readings")
+        .select("*")
+        .eq("watch_id", patient.watch_id)
+        .order("time", { ascending: false })
+        .limit(1);
+
+      if (readError || !latestRow || !latestRow.length) continue;
+      const reading = mapReading(latestRow[0]);
+
+      if (isCritical(reading)) {
+        notifications.push({
+          watchID: patient.watch_id,
+          patientName: patient.name,
+          ...reading
+        });
+      }
+    }
+
+    return res.json({ success: true, notifications });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Unable to load notifications" });
+  }
+});
+
+// ---------------- UPDATE FROM ESP32 ----------------
+app.get("/update", async (req, res) => {
+  try {
+    const watch_id = normalizeWatchId(req.query.watch_id || req.query.watchID);
+    const hr = Number(req.query.hr || 0);
+    const spo2 = Number(req.query.spo2 || 0);
+    const steps = Number(req.query.steps || 0);
+
+    if (!watch_id) {
+      return res.status(400).json({ success: false, message: "Missing watch_id" });
+    }
+
+    const { data: patient, error: patientError } = await supabase
+      .from("patients")
+      .select("watch_id,name,email,doctor_email")
+      .eq("watch_id", watch_id)
+      .single();
+
+    if (patientError || !patient) {
+      return res.status(404).json({ success: false, message: "Watch ID is not registered" });
+    }
+
+    const status = isCritical({ hr, spo2 }) ? "critical" : "normal";
+
+    const { data, error } = await supabase
+      .from("readings")
+      .insert({ watch_id, hr, spo2, steps, status })
+      .select("*")
+      .single();
+
+    if (error) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+
+    const reading = mapReading(data);
+
+    if (isCritical(reading)) {
+      sendCriticalEmail(patient, reading);
+    }
+
+    return res.json({ success: true, reading });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Unable to save reading" });
+  }
+});
+
+// ---------------- AI ----------------
+app.post("/aiChat", async (req, res) => {
+  try {
+    if (!GROQ_API_KEY) {
+      return res.status(400).json({ success: false, message: "GROQ_API_KEY not configured" });
+    }
+
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${GROQ_API_KEY}`
+        Authorization: `Bearer ${GROQ_API_KEY}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: modelName,
-        temperature: 0.3,
-        max_tokens: 300,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Context:\n${contextText}\n\nQuestion:\n${question}` }
-        ]
+        model: GROQ_MODEL,
+        messages: [{ role: "user", content: req.body.question }]
       })
     });
 
-    if (!response.ok) {
-      const body = await response.text();
-      lastError = `Groq error ${response.status}: ${body}`;
-      if (response.status === 404) {
-        continue;
-      }
-      throw new Error(lastError);
-    }
-
     const data = await response.json();
-    const text = data && data.choices && data.choices[0] && data.choices[0].message
-      ? data.choices[0].message.content
-      : "No response from AI.";
-
-    return text;
-  }
-
-  throw new Error(lastError || "Groq model request failed");
-}
-
-app.get("/update", (req, res) => {
-  const { watchID, hr, spo2, steps, status } = req.query;
-  const safeWatchID = String(watchID || "").trim().toUpperCase();
-
-  if (!safeWatchID) {
-    return res.status(400).send("watchID is required");
-  }
-
-  const readings = readJSON("./data/readings.json");
-  const patients = readJSON("./data/patients.json");
-
-  if (!readings[safeWatchID]) readings[safeWatchID] = [];
-
-  const entry = {
-    hr: Number(hr) || 0,
-    spo2: Number(spo2) || 0,
-    steps: Number(steps) || 0,
-    status: String(status || "normal"),
-    time: new Date().toISOString()
-  };
-
-  readings[safeWatchID].push(entry);
-  writeJSON("./data/readings.json", readings);
-
-  if (isCriticalReading(entry)) {
-    const patient = patients[safeWatchID];
-    sendCriticalEmail(patient, { ...entry, watchID: safeWatchID });
-  }
-
-  res.send("Data stored");
-});
-
-app.get("/data/:watchID", (req, res) => {
-  const readings = readJSON("./data/readings.json");
-  const safeWatchID = String(req.params.watchID || "").trim();
-  const key = findCaseInsensitiveKey(readings, safeWatchID);
-  res.json((key && readings[key]) || []);
-});
-
-app.post("/addPatient", (req, res) => {
-  const { watchID, name, email, doctorEmail, age, condition, phone } = req.body;
-
-  const safeWatchID = String(watchID || "").trim().toUpperCase();
-  const safeName = String(name || "").trim();
-  const safeEmail = String(email || "").trim();
-  const safeDoctorEmail = String(doctorEmail || "").trim();
-
-  if (!safeWatchID || !safeName || !safeEmail || !safeDoctorEmail) {
-    return res.status(400).json({ success: false, message: "Watch ID, patient name, email and doctor are required" });
-  }
-
-  const patients = readJSON("./data/patients.json");
-
-  const existingKey = findCaseInsensitiveKey(patients, safeWatchID);
-  const saveKey = existingKey || safeWatchID;
-
-  if (isWatchOwnedByAnotherDoctor(existingKey ? patients[existingKey] : null, safeDoctorEmail)) {
-    return res.status(403).json({ success: false, message: "Watch is linked to another doctor" });
-  }
-
-  patients[saveKey] = {
-    name: safeName,
-    email: safeEmail,
-    doctorEmail: safeDoctorEmail,
-    age: String(age || "").trim(),
-    condition: String(condition || "").trim(),
-    phone: String(phone || "").trim()
-  };
-
-  writeJSON("./data/patients.json", patients);
-  res.json({ success: true, message: "Watch linked successfully" });
-});
-
-app.put("/updatePatient", (req, res) => {
-  const { watchID, name, email, doctorEmail, age, condition, phone } = req.body;
-
-  const safeWatchID = String(watchID || "").trim().toUpperCase();
-  const safeName = String(name || "").trim();
-  const safeEmail = String(email || "").trim();
-  const safeDoctorEmail = String(doctorEmail || "").trim();
-
-  if (!safeWatchID || !safeName || !safeEmail || !safeDoctorEmail) {
-    return res.status(400).json({ success: false, message: "Watch ID, patient name, email and doctor are required" });
-  }
-
-  const patients = readJSON("./data/patients.json");
-  const existingKey = findCaseInsensitiveKey(patients, safeWatchID);
-  const currentEntry = existingKey ? patients[existingKey] : null;
-
-  if (!currentEntry) {
-    return res.status(404).json({ success: false, message: "Watch not found" });
-  }
-
-  if (isWatchOwnedByAnotherDoctor(currentEntry, safeDoctorEmail)) {
-    return res.status(403).json({ success: false, message: "Watch is linked to another doctor" });
-  }
-
-  patients[existingKey] = {
-    ...currentEntry,
-    name: safeName,
-    email: safeEmail,
-    doctorEmail: safeDoctorEmail,
-    age: String(age || currentEntry.age || "").trim(),
-    condition: String(condition || currentEntry.condition || "").trim(),
-    phone: String(phone || currentEntry.phone || "").trim()
-  };
-
-  writeJSON("./data/patients.json", patients);
-  res.json({ success: true, message: "Patient updated" });
-});
-
-app.get("/doctorWatches", (req, res) => {
-  const doctorEmail = String(req.query.doctorEmail || "").trim();
-
-  if (!doctorEmail) {
-    return res.status(400).json({ success: false, message: "doctorEmail is required" });
-  }
-
-  const patients = readJSON("./data/patients.json");
-  const doctorWatches = Object.entries(patients)
-    .filter(([, patient]) => patient && patient.doctorEmail === doctorEmail)
-    .map(([watchID, patient]) => ({
-      watchID,
-      name: patient.name || "-",
-      email: patient.email || "-",
-      age: patient.age || "-",
-      condition: patient.condition || "-",
-      phone: patient.phone || "-"
-    }));
-
-  res.json({ success: true, watches: doctorWatches });
-});
-
-app.get("/patientProfile/:watchID", (req, res) => {
-  const watchID = String(req.params.watchID || "").trim().toUpperCase();
-  const doctorEmail = String(req.query.doctorEmail || "").trim();
-
-  if (!watchID || !doctorEmail) {
-    return res.status(400).json({ success: false, message: "watchID and doctorEmail are required" });
-  }
-
-  const patients = readJSON("./data/patients.json");
-  const readings = readJSON("./data/readings.json");
-  const key = findCaseInsensitiveKey(patients, watchID);
-  const patient = key ? patients[key] : null;
-
-  if (!patient) {
-    return res.status(404).json({ success: false, message: "Patient not found for this watch" });
-  }
-
-  if (isWatchOwnedByAnotherDoctor(patient, doctorEmail)) {
-    return res.status(403).json({ success: false, message: "Access denied" });
-  }
-
-  const readingKey = findCaseInsensitiveKey(readings, watchID);
-  const watchReadings = (readingKey && readings[readingKey]) || [];
-  const latest = watchReadings[watchReadings.length - 1] || null;
-  const criticalCount = watchReadings.filter(isCriticalReading).length;
-
-  res.json({
-    success: true,
-    profile: {
-      watchID,
-      name: patient.name || "-",
-      email: patient.email || "-",
-      age: patient.age || "-",
-      condition: patient.condition || "-",
-      phone: patient.phone || "-",
-      doctorEmail: patient.doctorEmail || "-"
-    },
-    latest,
-    criticalCount,
-    readings: watchReadings
-  });
-});
-
-app.get("/patientPortal/:watchID", (req, res) => {
-  const watchID = String(req.params.watchID || "").trim().toUpperCase();
-  const email = String(req.query.email || "").trim();
-
-  if (!watchID || !email) {
-    return res.status(400).json({ success: false, message: "watchID and email are required" });
-  }
-
-  const patients = readJSON("./data/patients.json");
-  const readings = readJSON("./data/readings.json");
-  const key = findCaseInsensitiveKey(patients, watchID);
-  const patient = key ? patients[key] : null;
-
-  if (!patient) {
-    return res.status(404).json({ success: false, message: "Patient not found for this watch" });
-  }
-
-  if (String(patient.email || "").toLowerCase() !== email.toLowerCase()) {
-    return res.status(403).json({ success: false, message: "Access denied" });
-  }
-
-  const readingKey = findCaseInsensitiveKey(readings, watchID);
-  const watchReadings = (readingKey && readings[readingKey]) || [];
-  const latest = watchReadings[watchReadings.length - 1] || null;
-  const criticalCount = watchReadings.filter(isCriticalReading).length;
-
-  res.json({
-    success: true,
-    profile: {
-      watchID,
-      name: patient.name || "-",
-      email: patient.email || "-",
-      age: patient.age || "-",
-      condition: patient.condition || "-",
-      phone: patient.phone || "-"
-    },
-    latest,
-    criticalCount,
-    readings: watchReadings
-  });
-});
-
-app.get("/criticalNotifications", (req, res) => {
-  const doctorEmail = String(req.query.doctorEmail || "").trim();
-
-  if (!doctorEmail) {
-    return res.status(400).json({ success: false, message: "doctorEmail is required" });
-  }
-
-  const patients = readJSON("./data/patients.json");
-  const readings = readJSON("./data/readings.json");
-
-  const items = Object.entries(patients)
-    .filter(([, patient]) => patient && patient.doctorEmail === doctorEmail)
-    .map(([watchID, patient]) => {
-      const allReadings = readings[watchID] || [];
-      const latest = allReadings[allReadings.length - 1] || null;
-      return {
-        watchID,
-        patientName: patient.name || "Unknown",
-        latest
-      };
-    })
-    .filter((item) => isCriticalReading(item.latest))
-    .map((item) => ({
-      watchID: item.watchID,
-      patientName: item.patientName,
-      hr: Number(item.latest.hr) || 0,
-      spo2: Number(item.latest.spo2) || 0,
-      status: item.latest.status || "critical",
-      time: item.latest.time || new Date().toISOString()
-    }));
-
-  res.json({ success: true, notifications: items });
-});
-
-app.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  const doctors = readJSON("./data/doctors.json");
-
-  for (const key in doctors) {
-    if (doctors[key].email === email && doctors[key].password === password) {
-      return res.json({ success: true, doctorEmail: doctors[key].email });
-    }
-  }
-
-  res.json({ success: false });
-});
-
-app.post("/patientLogin", (req, res) => {
-  const { watchID, email } = req.body;
-  const safeWatchID = String(watchID || "").trim().toUpperCase();
-  const safeEmail = String(email || "").trim().toLowerCase();
-
-  if (!safeWatchID || !safeEmail) {
-    return res.status(400).json({ success: false, message: "Watch ID and email are required" });
-  }
-
-  const patients = readJSON("./data/patients.json");
-  const key = findCaseInsensitiveKey(patients, safeWatchID);
-  const patient = key ? patients[key] : null;
-
-  if (!patient) {
-    return res.json({ success: false, message: "Watch not found" });
-  }
-
-  if (String(patient.email || "").toLowerCase() !== safeEmail) {
-    return res.json({ success: false, message: "Invalid credentials" });
-  }
-
-  return res.json({
-    success: true,
-    patient: {
-        watchID: key || safeWatchID,
-      name: patient.name || "Patient",
-      email: patient.email || ""
-    }
-  });
-});
-
-app.post("/aiChat", async (req, res) => {
-  const role = String(req.body.role || "patient").trim().toLowerCase();
-  const question = String(req.body.question || "").trim();
-  const contextText = String(req.body.context || "").trim();
-
-  if (!question) {
-    return res.status(400).json({ success: false, message: "question is required" });
-  }
-
-  try {
-    const answer = await askGroq(question, contextText, role === "doctor" ? "doctor" : "patient");
-    return res.json({ success: true, answer });
-  } catch (error) {
-    console.error("AI chat failed:", error.message);
-    return res.status(500).json({ success: false, message: "AI service unavailable" });
+    return res.json({ success: true, answer: data.choices?.[0]?.message?.content || "" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "AI service error" });
   }
 });
 
-app.listen(3000, "0.0.0.0", () => {
-  console.log("Server running on http://localhost:3000");
-  console.log("LAN access enabled on port 3000");
+// ---------------- SUPABASE TEST ----------------
+app.get("/supabase-health", async (req, res) => {
+  const { data, error } = await supabase.from("doctors").select("email").limit(1);
+
+  if (error) return res.status(500).json({ success: false, error: error.message });
+
+  return res.json({ success: true, message: "Supabase connected", data });
+});
+
+// ---------------- SERVER ----------------
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

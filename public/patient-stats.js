@@ -1,6 +1,6 @@
-const doctorEmail = localStorage.getItem("doctor");
+const doctorEmail = localStorage.getItem("doctor_email") || localStorage.getItem("doctor");
 const params = new URLSearchParams(window.location.search);
-const watchID = params.get("watchID") || "";
+const watchID = (params.get("watchID") || params.get("watch_id") || "").toUpperCase();
 
 const pageTitle = document.getElementById("pageTitle");
 const watchInfo = document.getElementById("watchInfo");
@@ -94,12 +94,12 @@ function riskLabel(readings) {
 function renderPatientDetails(profile) {
   const details = [
     ["Patient Name", valueOrDash(profile.name)],
-    ["Watch ID", valueOrDash(profile.watchID)],
+    ["Watch ID", valueOrDash(profile.watch_id || profile.watchID)],
     ["Email", valueOrDash(profile.email)],
     ["Age", valueOrDash(profile.age)],
     ["Condition", valueOrDash(profile.condition)],
     ["Phone", valueOrDash(profile.phone)],
-    ["Doctor", valueOrDash(profile.doctorEmail)]
+    ["Doctor", valueOrDash(profile.doctor_email || profile.doctorEmail)]
   ];
 
   patientDetails.innerHTML = "";
@@ -212,7 +212,7 @@ function buildDoctorContext() {
 
   return [
     "Patient name: " + valueOrDash(profileData.profile.name),
-    "Watch ID: " + valueOrDash(profileData.profile.watchID),
+    "Watch ID: " + valueOrDash(profileData.profile.watch_id || profileData.profile.watchID),
     "Age: " + valueOrDash(profileData.profile.age),
     "Condition: " + valueOrDash(profileData.profile.condition),
     "Latest HR: " + valueOrDash(latest.hr),
@@ -268,7 +268,9 @@ async function onSendChat() {
 
 async function loadProfile() {
   try {
-    const response = await fetch("/patientProfile/" + encodeURIComponent(watchID) + "?doctorEmail=" + encodeURIComponent(doctorEmail));
+    const response = await fetch(
+      "/patientProfile/" + encodeURIComponent(watchID) + "?doctor_email=" + encodeURIComponent(doctorEmail)
+    );
     const result = await response.json();
 
     if (!response.ok || !result.success) {
@@ -276,13 +278,22 @@ async function loadProfile() {
       return;
     }
 
-    profileData = result;
-    pageTitle.textContent = result.profile.name + " - Patient Statistics";
-    watchInfo.textContent = "Watch ID: " + result.profile.watchID + " | Last update: " + formatTime(result.latest ? result.latest.time : null);
+    profileData = {
+      profile: {
+        ...(result.profile || {}),
+        watchID: (result.profile && (result.profile.watch_id || result.profile.watchID)) || watchID
+      },
+      readings: result.readings || [],
+      latest: result.latest || null
+    };
 
-    renderPatientDetails(result.profile);
-    renderSnapshot(result.latest, result.readings || []);
-    renderChart(result.readings || [], metricSelect.value);
+    pageTitle.textContent = profileData.profile.name + " - Patient Statistics";
+    watchInfo.textContent =
+      "Watch ID: " + (profileData.profile.watch_id || profileData.profile.watchID) + " | Last update: " + formatTime(profileData.latest ? profileData.latest.time : null);
+
+    renderPatientDetails(profileData.profile);
+    renderSnapshot(profileData.latest, profileData.readings);
+    renderChart(profileData.readings, metricSelect.value);
 
     pushChatMessage("Bot:", "Patient data loaded. Ask for latest vitals, summary, risk, or next steps.");
   } catch (error) {
@@ -291,3 +302,4 @@ async function loadProfile() {
 }
 
 loadProfile();
+setInterval(loadProfile, 15000);

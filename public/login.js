@@ -43,11 +43,13 @@ doctorForm.addEventListener("submit", async (event) => {
     const data = await response.json();
 
     if (!data.success) {
-      setMessage("Invalid doctor credentials.", "error");
+      setMessage(data.message || "Invalid doctor credentials.", "error");
       return;
     }
 
-    localStorage.setItem("doctor", data.doctorEmail || email);
+    const doctorEmail = data.doctor_email || data.doctorEmail || email;
+    localStorage.setItem("doctor_email", doctorEmail);
+    localStorage.setItem("doctor", doctorEmail);
     localStorage.removeItem("patientSession");
     setMessage("Doctor login successful. Redirecting...", "success");
     window.location = "dashboard.html";
@@ -60,14 +62,14 @@ patientForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   setMessage("Signing in patient...", "");
 
-  const watchID = document.getElementById("patientWatchID").value.trim().toUpperCase();
+  const watch_id = document.getElementById("patientWatchID").value.trim().toUpperCase();
   const email = document.getElementById("patientEmail").value.trim();
 
   try {
     const response = await fetch("/patientLogin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ watchID, email })
+      body: JSON.stringify({ watch_id, email })
     });
 
     const data = await response.json();
@@ -77,8 +79,9 @@ patientForm.addEventListener("submit", async (event) => {
       return;
     }
 
+    localStorage.removeItem("doctor_email");
     localStorage.removeItem("doctor");
-    localStorage.setItem("patientSession", JSON.stringify({ watchID, email }));
+    localStorage.setItem("patientSession", JSON.stringify({ watch_id, email }));
     setMessage("Patient login successful. Redirecting...", "success");
     window.location = "patient-portal.html";
   } catch (error) {

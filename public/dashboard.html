@@ -27,7 +27,16 @@
             <span id="notificationBadge" class="notification-badge" hidden>0</span>
           </button>
           <div id="notificationPanel" class="notification-panel" hidden>
-            <h3>Critical Alerts</h3>
+            <div class="notification-head">
+              <div>
+                <h3>Critical Alerts</h3>
+                <p class="subtle">Live watch signals and escalations</p>
+              </div>
+              <div class="notification-actions">
+                <button id="markReadBtn" class="secondary-btn" type="button">Mark all read</button>
+                <button id="clearAllBtn" class="secondary-btn" type="button">Clear all</button>
+              </div>
+            </div>
             <ul id="notificationList" class="notification-list"></ul>
           </div>
         </div>
@@ -84,6 +93,6 @@
     </section>
   </div>
 
-  <script src="script.js"></script>
+  <script src="dashboard.js"></script>
 </body>
 </html>

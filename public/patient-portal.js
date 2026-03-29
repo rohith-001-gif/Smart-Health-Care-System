@@ -14,7 +14,9 @@ const chatSendBtn = document.getElementById("chatSendBtn");
 
 let portalData = null;
 
-if (!session || !session.watchID || !session.email) {
+const watchID = session && (session.watch_id || session.watchID || "").toUpperCase();
+
+if (!session || !watchID || !session.email) {
   window.location = "login.html";
 }
 
@@ -77,7 +79,8 @@ function renderPatientDetails(profile) {
     ["Email", valueOrDash(profile.email)],
     ["Age", valueOrDash(profile.age)],
     ["Condition", valueOrDash(profile.condition)],
-    ["Phone", valueOrDash(profile.phone)]
+    ["Phone", valueOrDash(profile.phone)],
+    ["Doctor Contact", valueOrDash(profile.doctor_email || profile.doctorEmail)]
   ];
 
   patientDetails.innerHTML = "";
@@ -232,7 +235,7 @@ async function onSendChat() {
 async function loadPortal() {
   try {
     const response = await fetch(
-      "/patientPortal/" + encodeURIComponent(session.watchID) + "?email=" + encodeURIComponent(session.email)
+      "/patientPortal/" + encodeURIComponent(watchID) + "?email=" + encodeURIComponent(session.email)
     );
     const result = await response.json();
 
@@ -241,14 +244,22 @@ async function loadPortal() {
       return;
     }
 
-    portalData = result;
+    portalData = {
+      profile: {
+        ...(result.profile || {}),
+        watchID: (result.profile && (result.profile.watch_id || result.profile.watchID)) || watchID
+      },
+      readings: result.readings || [],
+      latest: result.latest || null
+    };
 
-    portalTitle.textContent = valueOrDash(result.profile.name) + " - Patient Portal";
-    portalInfo.textContent = "Watch ID: " + result.profile.watchID + " | Last update: " + formatTime(result.latest ? result.latest.time : null);
+    portalTitle.textContent = valueOrDash(portalData.profile.name) + " - Patient Portal";
+    portalInfo.textContent =
+      "Watch ID: " + (portalData.profile.watch_id || portalData.profile.watchID) + " | Last update: " + formatTime(portalData.latest ? portalData.latest.time : null);
 
-    renderPatientDetails(result.profile);
-    renderSnapshot(result.latest, result.readings || []);
-    renderChart(result.readings || [], metricSelect.value);
+    renderPatientDetails(portalData.profile);
+    renderSnapshot(portalData.latest, portalData.readings || []);
+    renderChart(portalData.readings || [], metricSelect.value);
   } catch (error) {
     portalInfo.textContent = "Server error while loading data";
   }

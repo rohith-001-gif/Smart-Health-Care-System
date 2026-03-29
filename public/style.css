@@ -1,15 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap");
 
 :root {
-  --card: linear-gradient(142deg, rgba(255, 255, 255, 0.8), rgba(245, 250, 255, 0.68));
-  --text: #ecf5ff;
-  --text-dark: #10253a;
-  --muted: #8ca6c0;
-  --primary: linear-gradient(120deg, #2ab8ff, #1ee3b1);
-  --primary-hover: linear-gradient(120deg, #28a6e8, #11c898);
-  --border: rgba(164, 212, 255, 0.26);
-  --danger: #e11d48;
-  --danger-soft: rgba(255, 88, 130, 0.14);
+  --card: linear-gradient(150deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  --text: #e9f6ff;
+  --text-dark: #0b1b2e;
+  --muted: #9cb9d5;
+  --primary: linear-gradient(115deg, #68f2ff, #5e7bff, #9c4dff);
+  --primary-hover: linear-gradient(115deg, #4de2f4, #536cff, #8d39ff);
+  --border: rgba(128, 196, 255, 0.35);
+  --danger: #ff5d7a;
+  --danger-soft: rgba(255, 93, 122, 0.18);
 }
 
 * {
@@ -27,16 +27,16 @@ body {
 
 body.doctor-theme {
   background:
-    radial-gradient(circle at 10% 8%, rgba(30, 207, 255, 0.3), transparent 34%),
-    radial-gradient(circle at 84% 15%, rgba(33, 240, 184, 0.22), transparent 36%),
-    linear-gradient(145deg, #031c34 0%, #072645 40%, #0f2f47 72%, #0f3f4a 100%);
+    radial-gradient(circle at 12% 8%, rgba(104, 242, 255, 0.28), transparent 30%),
+    radial-gradient(circle at 80% 12%, rgba(146, 120, 255, 0.22), transparent 32%),
+    linear-gradient(145deg, #050d1f 0%, #0c1f37 42%, #112b4d 76%, #0d2245 100%);
 }
 
 body.patient-theme {
   background:
-    radial-gradient(circle at 12% 8%, rgba(255, 153, 191, 0.28), transparent 32%),
-    radial-gradient(circle at 86% 18%, rgba(126, 216, 255, 0.2), transparent 34%),
-    linear-gradient(145deg, #2f1132 0%, #4a1d48 38%, #2e264f 72%, #1a334a 100%);
+    radial-gradient(circle at 14% 10%, rgba(255, 177, 213, 0.3), transparent 32%),
+    radial-gradient(circle at 82% 16%, rgba(118, 219, 255, 0.26), transparent 36%),
+    linear-gradient(145deg, #0f0a2e 0%, #1b1643 40%, #251d55 72%, #1d2d64 100%);
 }
 
 .lux-bg {
@@ -420,6 +420,7 @@ button:hover {
 
 .notification-wrap {
   position: relative;
+  z-index: 10;
 }
 
 .notification-btn {
@@ -464,15 +465,33 @@ button:hover {
   right: 0;
   top: 48px;
   width: 360px;
-  max-height: 380px;
+  max-height: 420px;
   overflow-y: auto;
-  background: linear-gradient(150deg, #fafdff, #edf6ff);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
-  z-index: 12;
-  color: #112840;
+  background: rgba(7, 15, 29, 0.92);
+  border: 1px solid rgba(149, 212, 255, 0.32);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+  z-index: 14;
+  color: #e6f3ff;
+  backdrop-filter: blur(14px);
+}
+
+.notification-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.notification-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.notif-read {
+  opacity: 0.72;
 }
 
 .notification-list {
@@ -482,11 +501,12 @@ button:hover {
 }
 
 .notif-item {
-  border: 1px solid #ffd2db;
-  background: var(--danger-soft);
-  border-radius: 8px;
-  padding: 8px;
+  border: 1px solid rgba(255, 169, 196, 0.45);
+  background: linear-gradient(145deg, rgba(255, 110, 143, 0.12), rgba(255, 156, 193, 0.08));
+  border-radius: 10px;
+  padding: 10px;
   margin-bottom: 8px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
 .notif-time {
@@ -732,6 +752,133 @@ button:hover {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 8px;
+}
+
+/* Elevated neon theme overrides */
+.card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(130, 196, 255, 0.32);
+  box-shadow:
+    0 25px 60px rgba(5, 9, 30, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: -40% -60%;
+  background: radial-gradient(circle, rgba(104, 242, 255, 0.08), transparent 42%);
+  transform: translateX(-20%);
+  animation: driftGlow 16s linear infinite;
+  pointer-events: none;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 70px rgba(5, 9, 30, 0.62);
+  border-color: rgba(140, 210, 255, 0.5);
+}
+
+button,
+.chat-input-row button,
+input[type="submit"],
+.stats-btn,
+.secondary-btn {
+  border-radius: 14px;
+  border: none;
+  background: var(--primary);
+  color: #0a1022;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  box-shadow: 0 12px 28px rgba(90, 152, 255, 0.45);
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+button:hover,
+.chat-input-row button:hover,
+input[type="submit"]:hover,
+.stats-btn:hover,
+.secondary-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 16px 34px rgba(90, 152, 255, 0.55);
+  filter: drop-shadow(0 0 12px rgba(108, 214, 255, 0.35));
+}
+
+.secondary-btn {
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: none;
+}
+
+.metric-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(140, 210, 255, 0.28);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(140, 210, 255, 0.48);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+}
+
+.patient-details div,
+.watches-table td,
+.watches-table th {
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.patient-details div:hover,
+.watches-table tbody tr:hover td {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.line-chart {
+  width: 100%;
+  height: 280px;
+  border: 1px solid rgba(120, 191, 255, 0.22);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 12% 22%, rgba(255, 255, 255, 0.06), transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(118, 187, 255, 0.08), transparent 42%),
+    linear-gradient(180deg, rgba(9, 22, 43, 0.78), rgba(5, 12, 27, 0.92));
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.35);
+}
+
+.line-chart text {
+  fill: #9fbbe0;
+}
+
+.chat-log {
+  background: linear-gradient(180deg, rgba(9, 18, 34, 0.86), rgba(6, 12, 24, 0.96));
+  border: 1px solid rgba(127, 194, 255, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 16px 32px rgba(0, 0, 0, 0.35);
+}
+
+.notification-panel {
+  border: 1px solid rgba(127, 194, 255, 0.3);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(14px);
+}
+
+.hero-banner {
+  background: linear-gradient(120deg, rgba(20, 32, 60, 0.88), rgba(40, 22, 71, 0.8));
+  border: 1px solid rgba(140, 200, 255, 0.4);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes driftGlow {
+  0% { transform: translateX(-20%) rotate(0deg); }
+  50% { transform: translateX(10%) rotate(180deg); }
+  100% { transform: translateX(-20%) rotate(360deg); }
 }
 
 @media (max-width: 980px) {
