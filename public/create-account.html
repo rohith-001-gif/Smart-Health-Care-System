@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Doctor Account</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="bg-scene" aria-hidden="true">
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+    <span class="orb orb-c"></span>
+    <span class="grid-glow"></span>
+  </div>
+
+  <main class="login-shell">
+    <section class="brand-panel">
+      <p class="eyebrow">Smart Health System</p>
+      <h1>Open secure access for doctors</h1>
+      <p class="intro">Create a doctor account to link watches, view patient dashboards, and receive critical alerts.</p>
+      <ul>
+        <li>Link patient watches instantly</li>
+        <li>View live vitals and trends</li>
+        <li>Receive critical notifications</li>
+      </ul>
+    </section>
+
+    <section class="login-card" aria-label="Create doctor account">
+      <h2 style="margin-top:0">Create Doctor Account</h2>
+      <form id="createAccountForm" class="auth-form active" autocomplete="off">
+        <label for="newDoctorEmail">Doctor Email</label>
+        <input id="newDoctorEmail" type="email" placeholder="doctor@clinic.com" required>
+
+        <label for="newDoctorPass">Password</label>
+        <input id="newDoctorPass" type="password" placeholder="At least 6 characters" required>
+
+        <button class="primary-btn" type="submit">Create Account</button>
+      </form>
+
+      <p id="createAccountMessage" class="login-message"></p>
+      <p class="helper-line">Already have an account? <a href="login.html" class="ghost-link">Back to login</a></p>
+    </section>
+  </main>
+
+  <script src="create-account.js"></script>
+</body>
+</html>

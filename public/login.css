@@ -260,6 +260,26 @@ body.patient-mode .primary-btn {
   color: var(--bad);
 }
 
+.helper-line {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.ghost-link {
+  border: none;
+  background: none;
+  color: var(--accent-2);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 0 0 6px;
+  text-decoration: underline;
+}
+
+.ghost-link:hover {
+  color: var(--ink);
+}
+
 @keyframes rise {
   from {
     transform: translateY(26px);

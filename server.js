@@ -119,6 +119,40 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// ---------------- REGISTER DOCTOR ----------------
+app.post("/registerDoctor", async (req, res) => {
+  try {
+    const email = normalizeEmail(req.body.email);
+    const password = (req.body.password || "").trim();
+
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Email and password required" });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ success: false, message: "Password must be at least 6 characters" });
+    }
+
+    const { data, error } = await supabase
+      .from("doctors")
+      .insert({ email, password })
+      .select("email")
+      .single();
+
+    if (error) {
+      if (error.code === "23505") {
+        return res.status(409).json({ success: false, message: "Account already exists" });
+      }
+      return res.status(400).json({ success: false, message: error.message });
+    }
+
+    return res.json({ success: true, doctor_email: data.email, message: "Doctor account created" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
 // ---------------- PATIENT LOGIN ----------------
 app.post("/patientLogin", async (req, res) => {
   try {
