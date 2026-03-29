@@ -1,10 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap");
 
 :root {
-  --card: linear-gradient(150deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  --card: linear-gradient(150deg, rgba(12, 24, 46, 0.9), rgba(8, 16, 32, 0.86));
+  --card-strong: linear-gradient(150deg, rgba(12, 26, 52, 0.94), rgba(7, 15, 33, 0.92));
   --text: #e9f6ff;
   --text-dark: #0b1b2e;
-  --muted: #9cb9d5;
+  --muted: #b3c9e4;
+  --muted-strong: #d1e2f6;
+  --panel-border: rgba(130, 196, 255, 0.35);
   --primary: linear-gradient(115deg, #68f2ff, #5e7bff, #9c4dff);
   --primary-hover: linear-gradient(115deg, #4de2f4, #536cff, #8d39ff);
   --border: rgba(128, 196, 255, 0.35);
@@ -162,7 +165,7 @@ h3 {
 
 .card .subtle,
 .chart-wrap .subtle {
-  color: #4f6880;
+  color: var(--muted);
 }
 
 .hero-kicker {
@@ -259,13 +262,13 @@ h3 {
 .card {
   margin-top: 18px;
   background: var(--card);
-  border: 1px solid var(--border);
+  border: 1px solid var(--panel-border);
   border-radius: 16px;
   padding: 18px;
-  box-shadow: 0 20px 42px rgba(0, 13, 31, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.66);
+  box-shadow: 0 28px 60px rgba(0, 13, 31, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
   animation: cardRise 0.65s ease both;
-  color: var(--text-dark);
+  color: var(--text);
 }
 
 .form-grid {
@@ -346,8 +349,8 @@ button:hover {
 
 .status-msg {
   margin: 10px 0 0;
-  color: #0a7f6e;
-  font-weight: 600;
+  color: #63f1c3;
+  font-weight: 700;
 }
 
 .watches-table {
@@ -362,10 +365,12 @@ button:hover {
   padding: 10px;
   text-align: left;
   vertical-align: top;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .watches-table th {
-  background: linear-gradient(120deg, rgba(216, 236, 252, 0.9), rgba(239, 247, 255, 0.9));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
 }
 
 .watches-table tbody tr {
@@ -374,7 +379,7 @@ button:hover {
 
 .watches-table tbody tr:hover {
   transform: translateY(-1px);
-  background: rgba(194, 228, 255, 0.28);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .action-cell {
@@ -526,11 +531,12 @@ button:hover {
 }
 
 .metric-card {
-  border: 1px solid var(--border);
+  border: 1px solid var(--panel-border);
   border-radius: 12px;
   padding: 12px;
-  background: linear-gradient(155deg, #ffffff, #eff7ff);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  background: linear-gradient(155deg, rgba(18, 34, 64, 0.94), rgba(12, 24, 44, 0.92));
+  color: var(--text);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
 .metric-card:hover {
@@ -549,6 +555,7 @@ button:hover {
   margin: 8px 0 0;
   font-size: 22px;
   font-weight: 700;
+  color: var(--text);
 }
 
 .metric-bad {
@@ -563,29 +570,32 @@ button:hover {
 }
 
 .patient-details div {
-  border: 1px solid var(--border);
+  border: 1px solid var(--panel-border);
   border-radius: 10px;
   padding: 10px;
-  background: linear-gradient(155deg, #ffffff, #f3f9ff);
+  background: linear-gradient(155deg, rgba(12, 22, 42, 0.92), rgba(10, 18, 36, 0.9));
+  color: var(--text);
 }
 
 .patient-details label {
   display: block;
   font-size: 12px;
-  color: var(--muted);
+  color: var(--muted-strong);
 }
 
 .patient-details strong {
   display: block;
   margin-top: 4px;
+  color: var(--text);
 }
 
 .chart-wrap {
   margin-top: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--panel-border);
   border-radius: 12px;
   padding: 12px;
-  background: linear-gradient(150deg, #ffffff, #eef7ff);
+  background: linear-gradient(160deg, rgba(16, 30, 54, 0.94), rgba(12, 22, 42, 0.92));
+  color: var(--text);
 }
 
 .line-chart polyline {
@@ -610,9 +620,9 @@ button:hover {
 
 .chatbot {
   margin-top: 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--panel-border);
   border-radius: 12px;
-  background: linear-gradient(150deg, #ffffff, #eff7ff);
+  background: linear-gradient(160deg, rgba(14, 26, 46, 0.94), rgba(10, 20, 38, 0.92));
   padding: 12px;
   animation: cardRise 0.8s ease both;
 }
@@ -756,10 +766,10 @@ button:hover {
 
 /* Elevated neon theme overrides */
 .card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(130, 196, 255, 0.32);
+  background: var(--card-strong);
+  border: 1px solid var(--panel-border);
   box-shadow:
-    0 25px 60px rgba(5, 9, 30, 0.55),
+    0 30px 70px rgba(5, 9, 30, 0.62),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(16px);
   position: relative;
@@ -817,16 +827,16 @@ input[type="submit"]:hover,
 }
 
 .metric-card {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(140, 210, 255, 0.28);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(160deg, rgba(14, 30, 56, 0.92), rgba(9, 20, 38, 0.9));
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
   transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .metric-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(140, 210, 255, 0.48);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+  border-color: rgba(140, 210, 255, 0.55);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
 }
 
 .patient-details div,
@@ -835,10 +845,14 @@ input[type="submit"]:hover,
   transition: transform 180ms ease, background-color 180ms ease;
 }
 
-.patient-details div:hover,
+.patient-details div:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .watches-table tbody tr:hover td {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .line-chart {
