@@ -112,34 +112,37 @@ Dashboard      Portal
  
 ```
 arogya/
-├── firmware/
-│   └── arogya_esp32/
-│       ├── arogya_esp32.ino      # Main Arduino sketch
-│       ├── sensors.h             # MAX30100 & MPU6050 helpers
-│       └── wifi_client.h         # HTTP POST logic
-├── backend/
-│   ├── server.js                 # Express.js entry point
-│   ├── routes/
-│   │   ├── data.js               # POST /api/data
-│   │   └── patients.js           # GET /api/patients
-│   └── supabase.js               # Supabase client config
-├── frontend/
+├── data/
+├── final_code/
+│   └── final_code.ino          # ESP32 main firmware sketch
+├── lib/                         # External libraries
+├── public/
+│   ├── assets/
+│   ├── create-account.html
+│   ├── create-account.js
+│   ├── dashboard.html           # Doctor dashboard
+│   ├── dashboard.js
 │   ├── login.html
-│   ├── doctor_dashboard.html
-│   └── patient_portal.html
+│   ├── login.css
+│   ├── login.js
+│   ├── patient-portal.html      # Patient portal
+│   ├── patient-portal.js
+│   ├── patient-stats.html
+│   ├── patient-stats.js
+│   └── style.css
+├── supabase/                    # Supabase config / migrations
+├── server.js                    # Express.js backend
+├── package.json
+├── .gitignore
 └── README.md
 ```
- 
-*(Update this structure to match your actual repo layout)*
- 
----
  
 ## ⚙️ Setup & Installation
  
 ### Backend (Local)
  
 ```bash
-git clone https://github.com/rohith-001-gif/arogya.git
+git clone https://github.com/rohith-001-gif/Smart-Health-Care-System
 cd arogya/backend
 npm install
 ```
