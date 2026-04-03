@@ -11,12 +11,11 @@ const logoutPatientBtn = document.getElementById("logoutPatientBtn");
 const chatLog = document.getElementById("chatLog");
 const chatInput = document.getElementById("chatInput");
 const chatSendBtn = document.getElementById("chatSendBtn");
+const reminderList = document.getElementById("reminderList");
 
 let portalData = null;
 
-const watchID = session && (session.watch_id || session.watchID || "").toUpperCase();
-
-if (!session || !watchID || !session.email) {
+if (!session || !session.watchID || !session.email) {
   window.location = "login.html";
 }
 
@@ -68,6 +67,35 @@ function computeAverages(readings) {
   };
 }
 
+function renderReminders(reminders) {
+  reminderList.innerHTML = "";
+  if (!reminders || !reminders.length) {
+    reminderList.innerHTML = "<li class='reminder-empty'>No reminders set.</li>";
+    return;
+  }
+
+  reminders.forEach((item) => {
+    const li = document.createElement("li");
+    li.className = "reminder-chip";
+    li.textContent = `${item.time || "--:--"} - ${item.medicine_name || "Medicine"} (${item.repeat_days || "-"})`;
+    reminderList.appendChild(li);
+  });
+}
+
+async function loadReminders() {
+  try {
+    const response = await fetch("/patientReminders?watch_id=" + encodeURIComponent(session.watchID));
+    const result = await response.json();
+    if (!response.ok || !result.success) {
+      renderReminders([]);
+      return;
+    }
+    renderReminders(result.reminders || []);
+  } catch (error) {
+    renderReminders([]);
+  }
+}
+
 function criticalCount(readings) {
   return readings.filter((r) => Number(r.hr) > 120 || Number(r.spo2) < 90 || String(r.status || "").toLowerCase().includes("critical")).length;
 }
@@ -79,8 +107,7 @@ function renderPatientDetails(profile) {
     ["Email", valueOrDash(profile.email)],
     ["Age", valueOrDash(profile.age)],
     ["Condition", valueOrDash(profile.condition)],
-    ["Phone", valueOrDash(profile.phone)],
-    ["Doctor Contact", valueOrDash(profile.doctor_email || profile.doctorEmail)]
+    ["Phone", valueOrDash(profile.phone)]
   ];
 
   patientDetails.innerHTML = "";
@@ -235,7 +262,7 @@ async function onSendChat() {
 async function loadPortal() {
   try {
     const response = await fetch(
-      "/patientPortal/" + encodeURIComponent(watchID) + "?email=" + encodeURIComponent(session.email)
+      "/patientPortal/" + encodeURIComponent(session.watchID) + "?email=" + encodeURIComponent(session.email)
     );
     const result = await response.json();
 
@@ -244,22 +271,15 @@ async function loadPortal() {
       return;
     }
 
-    portalData = {
-      profile: {
-        ...(result.profile || {}),
-        watchID: (result.profile && (result.profile.watch_id || result.profile.watchID)) || watchID
-      },
-      readings: result.readings || [],
-      latest: result.latest || null
-    };
+    portalData = result;
 
-    portalTitle.textContent = valueOrDash(portalData.profile.name) + " - Patient Portal";
-    portalInfo.textContent =
-      "Watch ID: " + (portalData.profile.watch_id || portalData.profile.watchID) + " | Last update: " + formatTime(portalData.latest ? portalData.latest.time : null);
+    portalTitle.textContent = valueOrDash(result.profile.name) + " - Patient Portal";
+    portalInfo.textContent = "Watch ID: " + result.profile.watchID + " | Last update: " + formatTime(result.latest ? result.latest.time : null);
 
-    renderPatientDetails(portalData.profile);
-    renderSnapshot(portalData.latest, portalData.readings || []);
-    renderChart(portalData.readings || [], metricSelect.value);
+    renderPatientDetails(result.profile);
+    renderSnapshot(result.latest, result.readings || []);
+    renderChart(result.readings || [], metricSelect.value);
+    await loadReminders();
   } catch (error) {
     portalInfo.textContent = "Server error while loading data";
   }
