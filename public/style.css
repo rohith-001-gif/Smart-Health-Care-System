@@ -1,18 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap");
-
 :root {
-  --card: linear-gradient(150deg, rgba(12, 24, 46, 0.9), rgba(8, 16, 32, 0.86));
-  --card-strong: linear-gradient(150deg, rgba(12, 26, 52, 0.94), rgba(7, 15, 33, 0.92));
-  --text: #e9f6ff;
-  --text-dark: #0b1b2e;
-  --muted: #b3c9e4;
-  --muted-strong: #d1e2f6;
-  --panel-border: rgba(130, 196, 255, 0.35);
-  --primary: linear-gradient(115deg, #68f2ff, #5e7bff, #9c4dff);
-  --primary-hover: linear-gradient(115deg, #4de2f4, #536cff, #8d39ff);
-  --border: rgba(128, 196, 255, 0.35);
-  --danger: #ff5d7a;
-  --danger-soft: rgba(255, 93, 122, 0.18);
+  --card: rgba(255, 255, 255, 0.78);
+  --text: #111827;
+  --muted: #4b5563;
+  --primary: #0f766e;
+  --primary-hover: #115e59;
+  --border: rgba(148, 163, 184, 0.28);
+  --danger: #be123c;
+  --danger-soft: #ffe8ee;
 }
 
 * {
@@ -21,7 +15,7 @@
 
 body {
   margin: 0;
-  font-family: "Manrope", "Segoe UI", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
@@ -29,17 +23,11 @@ body {
 }
 
 body.doctor-theme {
-  background:
-    radial-gradient(circle at 12% 8%, rgba(104, 242, 255, 0.28), transparent 30%),
-    radial-gradient(circle at 80% 12%, rgba(146, 120, 255, 0.22), transparent 32%),
-    linear-gradient(145deg, #050d1f 0%, #0c1f37 42%, #112b4d 76%, #0d2245 100%);
+  background: radial-gradient(circle at 12% 10%, #f0f9ff 0%, #e0f2fe 30%, #dbeafe 55%, #e0f2f1 100%);
 }
 
 body.patient-theme {
-  background:
-    radial-gradient(circle at 14% 10%, rgba(255, 177, 213, 0.3), transparent 32%),
-    radial-gradient(circle at 82% 16%, rgba(118, 219, 255, 0.26), transparent 36%),
-    linear-gradient(145deg, #0f0a2e 0%, #1b1643 40%, #251d55 72%, #1d2d64 100%);
+  background: radial-gradient(circle at 10% 10%, #fdf2f8 0%, #f5f3ff 36%, #ede9fe 60%, #e0f2fe 100%);
 }
 
 .lux-bg {
@@ -52,8 +40,8 @@ body.patient-theme {
 .lux-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(1px);
-  opacity: 0.62;
+  filter: blur(2px);
+  opacity: 0.56;
 }
 
 body.doctor-theme .orb-one {
@@ -61,7 +49,7 @@ body.doctor-theme .orb-one {
   height: 360px;
   top: -110px;
   left: -70px;
-  background: radial-gradient(circle, rgba(63, 220, 255, 0.55), rgba(14, 165, 233, 0));
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.55), rgba(14, 165, 233, 0));
   animation: floatA 14s ease-in-out infinite;
 }
 
@@ -70,7 +58,7 @@ body.doctor-theme .orb-two {
   height: 400px;
   top: 20%;
   right: -90px;
-  background: radial-gradient(circle, rgba(37, 255, 186, 0.4), rgba(16, 185, 129, 0));
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.45), rgba(16, 185, 129, 0));
   animation: floatB 17s ease-in-out infinite;
 }
 
@@ -79,7 +67,7 @@ body.doctor-theme .orb-three {
   height: 440px;
   bottom: -170px;
   left: 25%;
-  background: radial-gradient(circle, rgba(54, 151, 255, 0.38), rgba(59, 130, 246, 0));
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0));
   animation: floatC 19s ease-in-out infinite;
 }
 
@@ -88,7 +76,7 @@ body.patient-theme .orb-one {
   height: 360px;
   top: -100px;
   left: -80px;
-  background: radial-gradient(circle, rgba(255, 139, 194, 0.48), rgba(244, 114, 182, 0));
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.45), rgba(244, 114, 182, 0));
   animation: floatA 14s ease-in-out infinite;
 }
 
@@ -97,7 +85,7 @@ body.patient-theme .orb-two {
   height: 400px;
   top: 16%;
   right: -90px;
-  background: radial-gradient(circle, rgba(156, 139, 255, 0.35), rgba(168, 85, 247, 0));
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.38), rgba(168, 85, 247, 0));
   animation: floatB 17s ease-in-out infinite;
 }
 
@@ -106,7 +94,7 @@ body.patient-theme .orb-three {
   height: 420px;
   bottom: -150px;
   left: 25%;
-  background: radial-gradient(circle, rgba(92, 216, 255, 0.34), rgba(56, 189, 248, 0));
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.35), rgba(56, 189, 248, 0));
   animation: floatC 19s ease-in-out infinite;
 }
 
@@ -114,8 +102,8 @@ body.patient-theme .orb-three {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(176, 205, 235, 0.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(176, 205, 235, 0.09) 1px, transparent 1px);
+    linear-gradient(rgba(148, 163, 184, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.09) 1px, transparent 1px);
   background-size: 42px 42px;
   mask-image: radial-gradient(circle at 50% 45%, black 18%, transparent 80%);
   animation: driftGrid 18s linear infinite;
@@ -135,12 +123,6 @@ body.patient-theme .orb-three {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  background: rgba(3, 16, 32, 0.38);
-  border: 1px solid rgba(149, 212, 255, 0.32);
-  border-radius: 18px;
-  padding: 16px 18px;
-  box-shadow: 0 20px 40px rgba(2, 11, 25, 0.38);
-  backdrop-filter: blur(14px);
 }
 
 .header-actions {
@@ -153,8 +135,6 @@ h1,
 h2,
 h3 {
   margin: 0;
-  font-family: "Playfair Display", Georgia, serif;
-  letter-spacing: 0.2px;
 }
 
 #doctorEmailText,
@@ -163,112 +143,15 @@ h3 {
   color: var(--muted);
 }
 
-.card .subtle,
-.chart-wrap .subtle {
-  color: var(--muted);
-}
-
-.hero-kicker {
-  margin: 0;
-  color: #b7d9f8;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  font-weight: 700;
-}
-
-.hero-banner {
-  margin-top: 18px;
-  border-radius: 20px;
-  padding: 22px;
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: 18px;
-  background: linear-gradient(120deg, rgba(10, 26, 49, 0.72), rgba(20, 55, 83, 0.52));
-  border: 1px solid rgba(136, 206, 255, 0.36);
-  box-shadow: 0 22px 45px rgba(1, 7, 19, 0.36);
-  backdrop-filter: blur(14px);
-  position: relative;
-  overflow: hidden;
-}
-
-.hero-banner::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 10%, rgba(187, 232, 255, 0.14) 48%, transparent 90%);
-  transform: translateX(-65%);
-  animation: shimmer 5.6s ease-in-out infinite;
-}
-
-.hero-banner h2 {
-  margin-top: 8px;
-  font-size: clamp(22px, 2.2vw, 34px);
-  line-height: 1.2;
-}
-
-.hero-banner .subtle {
-  max-width: 62ch;
-  color: #b2cbde;
-}
-
-.hero-visuals {
-  display: grid;
-  gap: 10px;
-  position: relative;
-  z-index: 1;
-}
-
-.floating-med-card {
-  background: linear-gradient(145deg, rgba(251, 253, 255, 0.94), rgba(222, 239, 255, 0.82));
-  border: 1px solid rgba(153, 205, 248, 0.65);
-  border-radius: 14px;
-  display: grid;
-  grid-template-columns: 72px 1fr;
-  gap: 12px;
-  align-items: center;
-  padding: 10px;
-  box-shadow: 0 16px 26px rgba(0, 17, 38, 0.26);
-  transform-origin: center;
-}
-
-.floating-med-card span {
-  color: #16314a;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-}
-
-.floating-med-card img {
-  width: 100%;
-  height: 52px;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid rgba(123, 179, 230, 0.58);
-}
-
-.med-card-a {
-  animation: levitateA 6s ease-in-out infinite;
-}
-
-.med-card-b {
-  animation: levitateB 6.8s ease-in-out infinite;
-}
-
-.med-card-c {
-  animation: levitateC 7.2s ease-in-out infinite;
-}
-
 .card {
   margin-top: 18px;
   background: var(--card);
-  border: 1px solid var(--panel-border);
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 28px 60px rgba(0, 13, 31, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
   animation: cardRise 0.65s ease both;
-  color: var(--text);
 }
 
 .form-grid {
@@ -286,21 +169,11 @@ input,
 select,
 textarea {
   width: 100%;
-  padding: 11px 12px;
-  border: 1px solid rgba(153, 199, 238, 0.7);
-  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
   font-size: 14px;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(246, 252, 255, 0.92));
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-  border-color: #45b9ff;
-  box-shadow: 0 0 0 3px rgba(69, 185, 255, 0.16);
-  transform: translateY(-1px);
+  background: #fff;
 }
 
 .form-actions {
@@ -311,46 +184,40 @@ textarea:focus {
 
 button {
   border: none;
-  border-radius: 10px;
-  padding: 10px 16px;
+  border-radius: 8px;
+  padding: 9px 14px;
   font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
   cursor: pointer;
   background: var(--primary);
-  color: #022f35;
-  box-shadow: 0 10px 22px rgba(0, 40, 65, 0.25);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  color: #fff;
 }
 
 button:hover {
   background: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 14px 24px rgba(0, 40, 65, 0.3);
 }
 
 .secondary-btn {
-  background: linear-gradient(120deg, #f4f9ff, #dceeff);
-  color: #0f3552;
+  background: #e8eef7;
+  color: #1e3a5f;
 }
 
 .secondary-btn:hover {
-  background: linear-gradient(120deg, #e7f4ff, #d0e6ff);
+  background: #dce7f4;
 }
 
 .stats-btn {
-  background: linear-gradient(120deg, #5d93ff, #3dc7ff);
-  color: #072442;
+  background: #1d4ed8;
+  color: #fff;
 }
 
 .stats-btn:hover {
-  background: linear-gradient(120deg, #507fd8, #2aa6d8);
+  background: #1e40af;
 }
 
 .status-msg {
   margin: 10px 0 0;
-  color: #63f1c3;
-  font-weight: 700;
+  color: #0b6b5f;
+  font-weight: 600;
 }
 
 .watches-table {
@@ -365,12 +232,10 @@ button:hover {
   padding: 10px;
   text-align: left;
   vertical-align: top;
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.02);
 }
 
 .watches-table th {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  background: rgba(241, 245, 249, 0.85);
 }
 
 .watches-table tbody tr {
@@ -379,13 +244,68 @@ button:hover {
 
 .watches-table tbody tr:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(226, 232, 240, 0.36);
 }
 
 .action-cell {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.reminders-cell {
+  min-width: 260px;
+}
+
+.reminder-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.reminder-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reminder-chip {
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.reminder-empty {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.reminder-form {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+  display: grid;
+  gap: 6px;
+}
+
+.reminder-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.reminder-status {
+  margin: 6px 0 0;
+  color: #0b6b5f;
+  font-weight: 600;
+  font-size: 13px;
 }
 
 .conn-pill {
@@ -425,7 +345,6 @@ button:hover {
 
 .notification-wrap {
   position: relative;
-  z-index: 10;
 }
 
 .notification-btn {
@@ -433,8 +352,8 @@ button:hover {
   width: 42px;
   height: 42px;
   border-radius: 999px;
-  background: linear-gradient(120deg, #041a34, #114673);
-  color: #d9f2ff;
+  background: #111827;
+  color: #fff;
   padding: 0;
   display: inline-flex;
   align-items: center;
@@ -470,33 +389,14 @@ button:hover {
   right: 0;
   top: 48px;
   width: 360px;
-  max-height: 420px;
+  max-height: 380px;
   overflow-y: auto;
-  background: rgba(7, 15, 29, 0.92);
-  border: 1px solid rgba(149, 212, 255, 0.32);
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
-  z-index: 14;
-  color: #e6f3ff;
-  backdrop-filter: blur(14px);
-}
-
-.notification-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.notification-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.notif-read {
-  opacity: 0.72;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+  z-index: 12;
 }
 
 .notification-list {
@@ -506,12 +406,11 @@ button:hover {
 }
 
 .notif-item {
-  border: 1px solid rgba(255, 169, 196, 0.45);
-  background: linear-gradient(145deg, rgba(255, 110, 143, 0.12), rgba(255, 156, 193, 0.08));
-  border-radius: 10px;
-  padding: 10px;
+  border: 1px solid #ffd2db;
+  background: var(--danger-soft);
+  border-radius: 8px;
+  padding: 8px;
   margin-bottom: 8px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
 .notif-time {
@@ -531,12 +430,11 @@ button:hover {
 }
 
 .metric-card {
-  border: 1px solid var(--panel-border);
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   padding: 12px;
-  background: linear-gradient(155deg, rgba(18, 34, 64, 0.94), rgba(12, 24, 44, 0.92));
-  color: var(--text);
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  background: #f9fbff;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .metric-card:hover {
@@ -555,7 +453,6 @@ button:hover {
   margin: 8px 0 0;
   font-size: 22px;
   font-weight: 700;
-  color: var(--text);
 }
 
 .metric-bad {
@@ -570,32 +467,29 @@ button:hover {
 }
 
 .patient-details div {
-  border: 1px solid var(--panel-border);
-  border-radius: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
   padding: 10px;
-  background: linear-gradient(155deg, rgba(12, 22, 42, 0.92), rgba(10, 18, 36, 0.9));
-  color: var(--text);
+  background: #fbfdff;
 }
 
 .patient-details label {
   display: block;
   font-size: 12px;
-  color: var(--muted-strong);
+  color: var(--muted);
 }
 
 .patient-details strong {
   display: block;
   margin-top: 4px;
-  color: var(--text);
 }
 
 .chart-wrap {
   margin-top: 12px;
-  border: 1px solid var(--panel-border);
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   padding: 12px;
-  background: linear-gradient(160deg, rgba(16, 30, 54, 0.94), rgba(12, 22, 42, 0.92));
-  color: var(--text);
+  background: #fff;
 }
 
 .line-chart polyline {
@@ -613,16 +507,15 @@ button:hover {
 .line-chart {
   width: 100%;
   height: 280px;
-  border: 1px dashed #a9cae8;
-  border-radius: 10px;
-  background: linear-gradient(180deg, rgba(230, 243, 255, 0.55), rgba(248, 252, 255, 0.9));
+  border: 1px dashed #c8d7eb;
+  border-radius: 8px;
 }
 
 .chatbot {
   margin-top: 14px;
-  border: 1px solid var(--panel-border);
-  border-radius: 12px;
-  background: linear-gradient(160deg, rgba(14, 26, 46, 0.94), rgba(10, 20, 38, 0.92));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
   padding: 12px;
   animation: cardRise 0.8s ease both;
 }
@@ -631,9 +524,9 @@ button:hover {
   height: 200px;
   overflow-y: auto;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 10px;
-  background: linear-gradient(150deg, #f7fbff, #edf6ff);
+  background: #f9fbff;
 }
 
 .chat-msg {
@@ -670,16 +563,6 @@ button:hover {
   }
   50% {
     transform: scale(1.08);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-65%);
-  }
-  60%,
-  100% {
-    transform: translateX(165%);
   }
 }
 
@@ -722,36 +605,6 @@ button:hover {
   }
 }
 
-@keyframes levitateA {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-1deg);
-  }
-  50% {
-    transform: translateY(-8px) rotate(1.6deg);
-  }
-}
-
-@keyframes levitateB {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0.6deg);
-  }
-  50% {
-    transform: translateY(-10px) rotate(-1.5deg);
-  }
-}
-
-@keyframes levitateC {
-  0%,
-  100% {
-    transform: translateY(0) rotate(1.2deg);
-  }
-  50% {
-    transform: translateY(-7px) rotate(-1.1deg);
-  }
-}
-
 .chat-msg strong {
   display: inline-block;
   margin-right: 4px;
@@ -762,137 +615,6 @@ button:hover {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 8px;
-}
-
-/* Elevated neon theme overrides */
-.card {
-  background: var(--card-strong);
-  border: 1px solid var(--panel-border);
-  box-shadow:
-    0 30px 70px rgba(5, 9, 30, 0.62),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(16px);
-  position: relative;
-  overflow: hidden;
-  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
-}
-
-.card::after {
-  content: "";
-  position: absolute;
-  inset: -40% -60%;
-  background: radial-gradient(circle, rgba(104, 242, 255, 0.08), transparent 42%);
-  transform: translateX(-20%);
-  animation: driftGlow 16s linear infinite;
-  pointer-events: none;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 30px 70px rgba(5, 9, 30, 0.62);
-  border-color: rgba(140, 210, 255, 0.5);
-}
-
-button,
-.chat-input-row button,
-input[type="submit"],
-.stats-btn,
-.secondary-btn {
-  border-radius: 14px;
-  border: none;
-  background: var(--primary);
-  color: #0a1022;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  box-shadow: 0 12px 28px rgba(90, 152, 255, 0.45);
-  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
-}
-
-button:hover,
-.chat-input-row button:hover,
-input[type="submit"]:hover,
-.stats-btn:hover,
-.secondary-btn:hover {
-  background: var(--primary-hover);
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 16px 34px rgba(90, 152, 255, 0.55);
-  filter: drop-shadow(0 0 12px rgba(108, 214, 255, 0.35));
-}
-
-.secondary-btn {
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
-  color: var(--text);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: none;
-}
-
-.metric-card {
-  background: linear-gradient(160deg, rgba(14, 30, 56, 0.92), rgba(9, 20, 38, 0.9));
-  border: 1px solid var(--panel-border);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
-  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
-}
-
-.metric-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(140, 210, 255, 0.55);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
-}
-
-.patient-details div,
-.watches-table td,
-.watches-table th {
-  transition: transform 180ms ease, background-color 180ms ease;
-}
-
-.patient-details div:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.watches-table tbody tr:hover td {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.line-chart {
-  width: 100%;
-  height: 280px;
-  border: 1px solid rgba(120, 191, 255, 0.22);
-  border-radius: 14px;
-  background:
-    radial-gradient(circle at 12% 22%, rgba(255, 255, 255, 0.06), transparent 40%),
-    radial-gradient(circle at 80% 20%, rgba(118, 187, 255, 0.08), transparent 42%),
-    linear-gradient(180deg, rgba(9, 22, 43, 0.78), rgba(5, 12, 27, 0.92));
-  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.35);
-}
-
-.line-chart text {
-  fill: #9fbbe0;
-}
-
-.chat-log {
-  background: linear-gradient(180deg, rgba(9, 18, 34, 0.86), rgba(6, 12, 24, 0.96));
-  border: 1px solid rgba(127, 194, 255, 0.25);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 16px 32px rgba(0, 0, 0, 0.35);
-}
-
-.notification-panel {
-  border: 1px solid rgba(127, 194, 255, 0.3);
-  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(14px);
-}
-
-.hero-banner {
-  background: linear-gradient(120deg, rgba(20, 32, 60, 0.88), rgba(40, 22, 71, 0.8));
-  border: 1px solid rgba(140, 200, 255, 0.4);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
-}
-
-@keyframes driftGlow {
-  0% { transform: translateX(-20%) rotate(0deg); }
-  50% { transform: translateX(10%) rotate(180deg); }
-  100% { transform: translateX(-20%) rotate(360deg); }
 }
 
 @media (max-width: 980px) {
@@ -906,10 +628,6 @@ input[type="submit"]:hover,
 
   .patient-details {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .hero-banner {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -930,14 +648,6 @@ input[type="submit"]:hover,
   .header-actions {
     width: 100%;
     justify-content: space-between;
-  }
-
-  .hero-banner {
-    padding: 16px;
-  }
-
-  .hero-visuals {
-    grid-template-columns: 1fr;
   }
 
   .watches-table {
